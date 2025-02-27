@@ -7,6 +7,17 @@ interface SettingsPanelProps {
   onClose: () => void;
 }
 
+/**
+ * SettingsPanel component displays a panel for user settings configuration.
+ * It provides options to enable/disable sound on completion, auto-start the next session,
+ * and enable/disable notifications. The panel is animated and slides in from the right
+ * when opened. The component uses the `useSettings` hook to access and update settings.
+ *
+ * Props:
+ * - isOpen (boolean): Determines if the settings panel is open.
+ * - onClose (function): Callback function to close the settings panel.
+ */
+
 export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
   const { settings, updateSettings } = useSettings();
 

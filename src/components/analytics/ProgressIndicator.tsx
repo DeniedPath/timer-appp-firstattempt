@@ -5,6 +5,15 @@ interface ProgressIndicatorProps {
   value: number;
 }
 
+/**
+ * ProgressIndicator component displays an animated progress bar using the value provided.
+ * The progress bar is animated using the framer-motion library and visually shows the progress
+ * as a percentage of completion. It also displays the numeric progress percentage below the bar.
+ *
+ * @param {ProgressIndicatorProps} props - The properties for the component.
+ * @param {number} props.value - The current progress value represented as a percentage (0 to 100).
+ */
+
 export const ProgressIndicator = ({ value }: ProgressIndicatorProps) => (
   <div className="w-full p-4">
     <motion.div

@@ -9,6 +9,16 @@ import { SessionStats } from "../analytics/SessionStats";
 import { ProgressIndicator } from "../analytics/ProgressIndicator";
 import { SettingsPanel } from "../settings/SettingsPanel";
 
+/**
+ * TimerState component manages the state and functionality of the timer application.
+ * It integrates various sub-components, including TimerDisplay, TimerControls,
+ * StreakCounter, ProgressIndicator, and SessionStats, to provide a comprehensive
+ * timer interface. The component utilizes the useTimer hook for timer operations
+ * and the useAnalytics hook for session tracking and streak management.
+ * Additionally, it manages the visibility of the SettingsPanel and displays
+ * notifications using the Toaster from Sonner.
+ */
+
 export const TimerState = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { addSession, sessions, getStreak } = useAnalytics();

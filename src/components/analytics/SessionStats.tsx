@@ -5,6 +5,12 @@ interface SessionStatsProps {
   sessions: SessionData[];
 }
 
+/**
+ * Displays a line chart of the user's past session durations.
+ * @param {{ sessions: SessionData[] }} props
+ * @prop {SessionData[]} sessions The user's past sessions.
+ */
+
 export const SessionStats = ({ sessions }: SessionStatsProps) => {
   const chartData = sessions.map(session => ({
     date: new Date(session.date).toLocaleDateString(),

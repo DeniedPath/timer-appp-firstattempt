@@ -2,6 +2,16 @@ import { TimerState } from "@/components/timer/TimerState";
 import { SettingsProvider } from "@/components/settings/SettingsContext";
 import Particles from "@/components/backgrounds/Particles/Particles";
 
+/**
+ * Home component serves as the main entry point for the application.
+ * It provides the overall layout and context providers needed for the app's functionality.
+ * 
+ * - Wraps the entire application within the SettingsProvider to supply settings context.
+ * - Renders a full-screen div with a black background and a twinkling star effect.
+ * - Embeds the Particles component to create a space-themed animated background.
+ * - Includes the TimerState component to manage and display the timer functionality.
+ */
+
 export default function Home() {
   return (
     <SettingsProvider>

@@ -14,6 +14,20 @@ interface TimerControlsProps {
   setIsSettingsOpen: (value: boolean) => void;
 }
 
+/**
+ * TimerControls component: Contains controls for starting, stopping, and continuing a timer.
+ * The component is conditionally rendered based on the timer's running state and duration.
+ *
+ * @param {boolean} isRunning - Whether the timer is currently running.
+ * @param {number} time - The current duration of the timer.
+ * @param {string} inputTime - The user's input for the timer's duration.
+ * @param {function} setInputTime - A function to update the user's input.
+ * @param {function} startTimer - A function to start the timer.
+ * @param {function} stopTimer - A function to stop the timer.
+ * @param {function} continueTimer - A function to continue the timer.
+ * @param {function} resetTimer - A function to reset the timer.
+ * @param {function} setIsSettingsOpen - A function to open the settings panel.
+ */
 export const TimerControls = ({
   isRunning,
   time,

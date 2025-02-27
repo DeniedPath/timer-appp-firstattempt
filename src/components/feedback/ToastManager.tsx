@@ -5,7 +5,15 @@ interface ToastManagerProps {
   notification: Notification;
   onRemove: (id: string) => void;
 }
-
+/**
+ * A ToastManager is a single toast notification that will be removed after
+ * its duration has passed. It animates in and out of view, and will
+ * automatically remove itself from the list of notifications when its
+ * animation is complete.
+ * @param notification The notification to display
+ * @param onRemove A function that will be called when the toast is removed
+ * @returns A single toast notification
+ */
 export const ToastManager = ({ notification, onRemove }: ToastManagerProps) => {
   const bgColor = {
     success: "bg-green-500",

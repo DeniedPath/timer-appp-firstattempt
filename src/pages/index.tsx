@@ -2,6 +2,13 @@ import { TimerState } from "@/components/timer/TimerState";
 import { SettingsProvider } from "@/components/settings/SettingsContext";
 import Particles from "@/components/backgrounds/Particles/Particles"; // Import the Particles component
 
+/**
+ * The home page of the application, containing the timer and settings
+ * components. Additionally, it wraps the timer with the SettingsProvider
+ * component to provide the settings context to the timer.
+ *
+ * @returns The home page component.
+ */
 export default function Home() {
   return (
     <SettingsProvider>
