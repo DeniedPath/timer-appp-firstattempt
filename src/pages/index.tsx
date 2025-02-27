@@ -1,26 +1,8 @@
 import { TimerState } from "@/components/timer/TimerState";
 import { SettingsProvider } from "@/components/settings/SettingsContext";
-
+import Particles from "@/components/backgrounds/Particles/Particles"; // Import the Particles component
 
 export default function Home() {
-  const stars = Array.from({ length: 100 }).map((_, i) => (
-    <div
-      key={i}
-      className="stars"
-      style={{
-        position: "absolute",
-        width: "2px",
-        height: "2px",
-        background: "white",
-        borderRadius: "50%",
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        animation: `twinkle ${Math.random() * 3 + 1}s infinite`,
-        animationDelay: `${Math.random() * 3}s`,
-      }}
-    />
-  ));
-
   return (
     <SettingsProvider>
       <div className="relative min-h-screen bg-black overflow-hidden">
@@ -31,8 +13,18 @@ export default function Home() {
             100% { opacity: 0.2; }
           }
         `}</style>
-        <div className="absolute inset-0">{stars}</div>
-        
+        <div style={{ width: '100%', height: '100%', position: 'absolute' }}>
+          <Particles
+            particleColors={['#ffffff', '#ffffff']}
+            particleCount={1000}
+            particleSpread={20}
+            speed={0.1}
+            particleBaseSize={100}
+            moveParticlesOnHover={true}
+            alphaParticles={false}
+            disableRotation={true} 
+          />
+        </div>
         <TimerState />
       </div>
     </SettingsProvider>

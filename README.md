@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Space-Themed Timer App
+
+This is a space-themed timer application built with [Next.js](https://nextjs.org), [Framer Motion](https://www.framer.com/motion/), and other modern web technologies.
 
 ## Getting Started
 
@@ -6,19 +8,49 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+npx tauri dev (recommended)
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Timer Functionality**: Start, pause, continue, and reset the timer.
+- **Settings Panel**: Adjust timer settings.
+- **Progress Indicator**: Visual representation of the timer's progress.
+- **Streak Counter**: Track your streaks.
+- **Session Stats**: View statistics of your timer sessions.
+- **Space-Themed Background**: Animated particles to give a space-like feel.
+
+## Project Structure
+
+```plaintext
+src/
+├── components/
+│   ├── analytics/
+│   │   └── ProgressIndicator.tsx
+│   ├── backgrounds/
+│   │   └── Particles/
+│   ├── feedback/
+│   ├── settings/
+│   ├── timer/
+│   │   ├── TimerControls.tsx
+│   │   ├── TimerDisplay.tsx
+│   │   └── TimerState.tsx
+│   └── ui/
+├── hooks/
+│   ├── useAnalytics.ts
+│   ├── useNotifications.ts
+│   └── useTimer.ts
+├── lib/
+│   └── utils.ts
+├── pages/
+│   ├── _app.tsx
+│   └── index.tsx
+└── styles/
+    └── globals.css
+```
 
 ## Learn More
 
