@@ -3,6 +3,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 interface Settings {
   soundEnabled: boolean;
   autoStart: boolean;
+  notificationsEnabled: boolean; // New setting
 }
 
 interface SettingsContextType {
@@ -15,11 +16,12 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<Settings>({
     soundEnabled: false,
-    autoStart: false
+    autoStart: false,
+    notificationsEnabled: true, // Default to true
   });
 
   const updateSettings = (newSettings: Partial<Settings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+    setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
   return (
@@ -34,4 +36,3 @@ export const useSettings = () => {
   if (!context) throw new Error("useSettings must be used within SettingsProvider");
   return context;
 };
-

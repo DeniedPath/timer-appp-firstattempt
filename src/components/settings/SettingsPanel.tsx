@@ -26,7 +26,7 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
           <input
             type="checkbox"
             checked={settings.soundEnabled}
-            onChange={e => updateSettings({ soundEnabled: e.target.checked })}
+            onChange={(e) => updateSettings({ soundEnabled: e.target.checked })}
           />
           Sound on Completion
         </label>
@@ -34,9 +34,17 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
           <input
             type="checkbox"
             checked={settings.autoStart}
-            onChange={e => updateSettings({ autoStart: e.target.checked })}
+            onChange={(e) => updateSettings({ autoStart: e.target.checked })}
           />
           Auto Start Next Session
+        </label>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={settings.notificationsEnabled}
+            onChange={(e) => updateSettings({ notificationsEnabled: e.target.checked })}
+          />
+          Enable Notifications
         </label>
       </div>
       

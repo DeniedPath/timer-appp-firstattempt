@@ -1,28 +1,22 @@
 import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner"; // Import Sonner Toaster
 import { useTimer } from "../../hooks/useTimer";
 import { useAnalytics } from "../../hooks/useAnalytics";
-import { useNotifications } from "../../hooks/useNotifications";
 import { TimerDisplay } from "./TimerDisplay";
 import { TimerControls } from "./TimerControls";
 import { StreakCounter } from "../analytics/StreakCounter";
 import { SessionStats } from "../analytics/SessionStats";
 import { ProgressIndicator } from "../analytics/ProgressIndicator";
-import { NotificationSystem } from "../feedback/NotificationSystem";
 import { SettingsPanel } from "../settings/SettingsPanel";
-import { useSettings } from "../settings/SettingsContext";
 
 export const TimerState = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { settings } = useSettings();
   const { addSession, sessions, getStreak } = useAnalytics();
-  const { addNotification } = useNotifications();
-  
+
   const timer = useTimer({
     onComplete: (duration: number) => {
       addSession(duration, true);
-      addNotification("Timer completed!", "success");
     },
-    soundEnabled: settings.soundEnabled
   });
 
   return (
@@ -41,7 +35,17 @@ export const TimerState = () => {
         <ProgressIndicator value={timer.progress} />
         <SessionStats sessions={sessions} />
       </div>
-      <NotificationSystem />
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: "rgba(26, 26, 61, 0.8)",
+            color: "#ffffff",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            backdropFilter: "blur(4px)",
+          },
+        }}
+      />
       <SettingsPanel
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
