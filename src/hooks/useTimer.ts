@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSettings } from "../components/settings/SettingsContext";
+import { useSettings } from "../components/context/SettingsContext";
 import { useAnalytics } from "./useAnalytics";
 import { toast } from "sonner";
 
@@ -8,12 +8,12 @@ interface TimerOptions {
 }
 
 export const useTimer = (options: TimerOptions = {}) => {
+  const { settings } = useSettings();
   const [time, setTime] = useState<number>(0);
   const [inputTime, setInputTime] = useState<string>("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [initialDuration, setInitialDuration] = useState<number>(0);
 
-  const { settings } = useSettings();
   const { addSession } = useAnalytics();
 
   useEffect(() => {
@@ -158,6 +158,10 @@ export const useTimer = (options: TimerOptions = {}) => {
       }
     }
   };
+
+  if (!settings) {
+    throw new Error("Settings context is not available");
+  }
 
   return {
     time,

@@ -1,5 +1,5 @@
 import { TimerState } from "@/components/timer/TimerState";
-import { SettingsProvider } from "@/components/settings/SettingsContext";
+import { SettingsProvider } from "@/components/context/SettingsContext";
 import Particles from "@/components/backgrounds/Particles/Particles"; // Import the Particles component
 
 /**
