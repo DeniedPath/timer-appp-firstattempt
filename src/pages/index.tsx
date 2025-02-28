@@ -20,7 +20,7 @@ export default function Home() {
             100% { opacity: 0.2; }
           }
         `}</style>
-        <div style={{ width: '100%', height: '100%', position: 'absolute' }}>
+        <div style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 0 }}>
           <Particles
             particleColors={['#ffffff', '#ffffff']}
             particleCount={1000}

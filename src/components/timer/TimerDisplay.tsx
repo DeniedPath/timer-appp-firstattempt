@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Progress } from "../ui/progress";
 
+
 // Define the props interface for TimerDisplay component
 interface TimerDisplayProps {
     formattedTime: string;  // The formatted time string to display

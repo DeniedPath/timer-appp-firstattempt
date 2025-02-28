@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Settings2 } from "lucide-react";
 import { useSettings } from "./SettingsContext";
 
+
 interface SettingsPanelProps {
   isOpen: boolean;
   onClose: () => void;

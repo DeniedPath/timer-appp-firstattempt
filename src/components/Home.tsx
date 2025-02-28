@@ -1,5 +1,6 @@
 import { TimerState } from "@/components/timer/TimerState";
 import { SettingsProvider } from "@/components/settings/SettingsContext";
+import { useTheme } from "@/components/settings/ThemeContext";
 import Particles from "@/components/backgrounds/Particles/Particles";
 
 /**
@@ -13,9 +14,11 @@ import Particles from "@/components/backgrounds/Particles/Particles";
  */
 
 export default function Home() {
+  const { theme } = useTheme(); // Get the current theme
+
   return (
     <SettingsProvider>
-      <div className="relative min-h-screen bg-black overflow-hidden">
+      <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: theme.background, color: theme.color }}>
         <style jsx global>{`
           @keyframes twinkle {
             0% { opacity: 0.2; }

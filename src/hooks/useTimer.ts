@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSettings } from "../components/settings/SettingsContext";
 import { useAnalytics } from "./useAnalytics";
-import { toast } from "sonner"; // Import the toast method from sonner
+import { toast } from "sonner";
 
 interface TimerOptions {
   onComplete?: (duration: number) => void;
@@ -42,7 +42,7 @@ export const useTimer = (options: TimerOptions = {}) => {
     }
     const duration = initialDuration;
     addSession(duration, true);
-    if (settings.notificationsEnabled) { // Check setting before showing toast
+    if (settings.notificationsEnabled) {
       toast.success("Timer Done!", {
         duration: 3000,
         style: {
@@ -65,15 +65,48 @@ export const useTimer = (options: TimerOptions = {}) => {
     setInitialDuration(seconds);
     setTime(seconds);
     setIsRunning(true);
+    if (settings.notificationsEnabled) {
+      toast.info("Timer started", {
+        duration: 3000,
+        style: {
+          background: "rgba(26, 26, 61, 0.8)",
+          color: "#ffffff",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(4px)",
+        },
+      });
+    }
   };
 
   const stopTimer = (): void => {
     setIsRunning(false);
+    if (settings.notificationsEnabled) {
+      toast.info("Timer paused", {
+        duration: 3000,
+        style: {
+          background: "rgba(26, 26, 61, 0.8)",
+          color: "#ffffff",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(4px)",
+        },
+      });
+    }
   };
 
   const continueTimer = (): void => {
     if (time > 0) {
       setIsRunning(true);
+      if (settings.notificationsEnabled) {
+        toast.info("Timer resumed", {
+          duration: 3000,
+          style: {
+            background: "rgba(26, 26, 61, 0.8)",
+            color: "#ffffff",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            backdropFilter: "blur(4px)",
+          },
+        });
+      }
     }
   };
 
@@ -83,6 +116,17 @@ export const useTimer = (options: TimerOptions = {}) => {
     setInitialDuration(0);
     setInputTime("");
     if (time > 0) addSession(time, false);
+    if (settings.notificationsEnabled) {
+      toast.info("Timer reset", {
+        duration: 3000,
+        style: {
+          background: "rgba(26, 26, 61, 0.8)",
+          color: "#ffffff",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(4px)",
+        },
+      });
+    }
   };
 
   const formatTime = (): string => {
