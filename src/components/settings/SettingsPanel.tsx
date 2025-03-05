@@ -27,6 +27,19 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
     onClose();
   }, [onClose]);
 
+  // Toggle handlers for each setting
+  const toggleSound = useCallback(() => {
+    updateSettings({ soundEnabled: !settings.soundEnabled });
+  }, [settings.soundEnabled, updateSettings]);
+
+  const toggleAutoStart = useCallback(() => {
+    updateSettings({ autoStart: !settings.autoStart });
+  }, [settings.autoStart, updateSettings]);
+
+  const toggleNotifications = useCallback(() => {
+    updateSettings({ notificationsEnabled: !settings.notificationsEnabled });
+  }, [settings.notificationsEnabled, updateSettings]);
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -100 }}
@@ -48,7 +61,7 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
       </div>
       
       <div className="space-y-5">
-        <label className="flex items-center gap-3 cursor-pointer group">
+        <label className="flex items-center gap-3 cursor-pointer group" onClick={toggleSound}>
           <div className={`w-10 h-6 rounded-full flex items-center ${settings.soundEnabled ? 'bg-blue-500' : 'bg-gray-600'} transition-colors duration-200 p-1`}>
             <motion.div 
               className="w-4 h-4 bg-white rounded-full" 
@@ -59,7 +72,7 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
           <span className="group-hover:text-blue-300 transition-colors">Sound on Completion</span>
         </label>
         
-        <label className="flex items-center gap-3 cursor-pointer group">
+        <label className="flex items-center gap-3 cursor-pointer group" onClick={toggleAutoStart}>
           <div className={`w-10 h-6 rounded-full flex items-center ${settings.autoStart ? 'bg-blue-500' : 'bg-gray-600'} transition-colors duration-200 p-1`}>
             <motion.div 
               className="w-4 h-4 bg-white rounded-full" 
@@ -70,7 +83,7 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
           <span className="group-hover:text-blue-300 transition-colors">Auto Start Next Session</span>
         </label>
         
-        <label className="flex items-center gap-3 cursor-pointer group">
+        <label className="flex items-center gap-3 cursor-pointer group" onClick={toggleNotifications}>
           <div className={`w-10 h-6 rounded-full flex items-center ${settings.notificationsEnabled ? 'bg-blue-500' : 'bg-gray-600'} transition-colors duration-200 p-1`}>
             <motion.div 
               className="w-4 h-4 bg-white rounded-full" 

@@ -1,35 +1,65 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 
 interface Settings {
   soundEnabled: boolean;
   autoStart: boolean;
-  notificationsEnabled: boolean; // New setting
+  notificationsEnabled: boolean;
 }
 
-interface SettingsContextType extends Settings { // Extend Settings
-  updateSettings: (settings: Partial<SettingsContextType>) => void;
+interface SettingsContextType {
+  settings: Settings;
+  updateSettings: (settings: Partial<Settings>) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-/**
- * The SettingsProvider component wraps your app and provides the settings context to all components.
- * It uses the useState hook to hold the current settings state and the updateSettings function to update it.
- * The value of the context is an object that contains the current settings and the updateSettings function.
- * The children prop is expected to contain your app's components that use the useSettings hook.
- */
-export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState<SettingsContextType>({
-    soundEnabled: true,
-    autoStart: false,
-    notificationsEnabled: true,
-    updateSettings: (newSettings) => setSettings((prev) => ({ ...prev, ...newSettings })),
-  });
+// Get settings from localStorage (client-side only)
+const getStoredSettings = (): Settings | null => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('timer_settings');
+    return stored ? JSON.parse(stored) : null;
+  }
+  return null;
+};
 
-  // Memoize the value to prevent unnecessary re-renders
+// Default settings
+const defaultSettings: Settings = {
+  soundEnabled: true,
+  autoStart: false,
+  notificationsEnabled: true,
+};
+
+export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Start with default settings, then load from localStorage after mounting
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [isClient, setIsClient] = useState(false);
+
+  // After component mounts (client-side only), load from localStorage
+  useEffect(() => {
+    setIsClient(true);
+    const storedSettings = getStoredSettings();
+    if (storedSettings) {
+      setSettings(storedSettings);
+    }
+  }, []);
+
+  // Save settings to localStorage when they change (client-side only)
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('timer_settings', JSON.stringify(settings));
+    }
+  }, [settings, isClient]);
+
+  const updateSettings = (newSettings: Partial<Settings>) => {
+    setSettings(prev => {
+      console.log('Updating settings:', { ...prev, ...newSettings });
+      return { ...prev, ...newSettings };
+    });
+  };
+
   const value = useMemo(() => ({
-    ...settings,
-    updateSettings: (newSettings: Partial<SettingsContextType>) => setSettings((prev) => ({ ...prev, ...newSettings })),
+    settings,
+    updateSettings,
   }), [settings]);
 
   return (
