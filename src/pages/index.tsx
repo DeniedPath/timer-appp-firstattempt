@@ -1,17 +1,24 @@
 import { TimerState } from "@/components/timer/TimerState";
 import { SettingsProvider } from "@/components/context/SettingsContext";
 import { AchievementsProvider } from "@/components/achievements/AchievementsContext";
+import { useSettings } from "@/components/context/SettingsContext";
 import Particles from "@/components/backgrounds/Particles/Particles";
 import { useMemo } from "react";
+import dynamic from "next/dynamic";
+
+// Dynamically import the SolarSystemBackground with no SSR to prevent hydration issues
+const DynamicSolarSystemBackground = dynamic(
+  () => import("@/components/backgrounds/SolarSystem/SolarSystemBackground"),
+  { ssr: false }
+);
 
 /**
- * The home page of the application, containing the timer and settings components.
- * It wraps the timer with both the SettingsProvider and AchievementsProvider
- * components to provide the necessary contexts to the timer.
- *
- * The space-themed background is created using the Particles component.
+ * BackgroundSelector component that renders the appropriate background
+ * based on the selected theme in settings
  */
-export default function Home() {
+const BackgroundSelector = () => {
+  const { settings } = useSettings();
+  
   // Memoize the particle props to prevent unnecessary re-renders
   const particleProps = useMemo(() => ({
     particleColors: ['#ffffff', '#ffffff'],
@@ -24,6 +31,29 @@ export default function Home() {
     disableRotation: true 
   }), []);
 
+  // Render the appropriate background based on settings
+  if (settings.backgroundTheme === 'Particles') {
+    return (
+      <div style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 0 }}>
+        <Particles {...particleProps} />
+      </div>
+    );
+  } else {
+    // For Solar System or planet views
+    const planetFocus = settings.backgroundTheme;
+    return <DynamicSolarSystemBackground planetFocus={planetFocus} />;
+  }
+};
+
+/**
+ * The home page of the application, containing the timer and settings components.
+ * It wraps the timer with both the SettingsProvider and AchievementsProvider
+ * components to provide the necessary contexts to the timer.
+ *
+ * Based on the user's settings, it displays either the particle background or
+ * the solar system background.
+ */
+export default function Home() {
   return (
     <SettingsProvider>
       <AchievementsProvider>
@@ -35,9 +65,11 @@ export default function Home() {
               100% { opacity: 0.2; }
             }
           `}</style>
-          <div style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 0 }}>
-            <Particles {...particleProps} />
-          </div>
+          
+          {/* The BackgroundSelector component will choose the correct background */}
+          <BackgroundSelector />
+          
+          {/* Timer state is rendered above the background */}
           <TimerState />
         </div>
       </AchievementsProvider>
