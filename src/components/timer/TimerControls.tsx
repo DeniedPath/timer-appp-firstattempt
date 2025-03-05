@@ -11,7 +11,6 @@ interface TimerControlsProps {
   stopTimer: () => void;
   continueTimer: () => void;
   resetTimer: () => void;
-  setIsSettingsOpen: (value: boolean) => void;
 }
 
 /**
@@ -26,7 +25,6 @@ interface TimerControlsProps {
  * @param {function} stopTimer - A function to stop the timer.
  * @param {function} continueTimer - A function to continue the timer.
  * @param {function} resetTimer - A function to reset the timer.
- * @param {function} setIsSettingsOpen - A function to open the settings panel.
  */
 export const TimerControls = ({
   isRunning,
@@ -37,7 +35,6 @@ export const TimerControls = ({
   stopTimer,
   continueTimer,
   resetTimer,
-  setIsSettingsOpen,
 }: TimerControlsProps) => {
   return (
     <TooltipProvider>
@@ -72,21 +69,6 @@ export const TimerControls = ({
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Start the timer</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <motion.button
-                    whileHover={{ scale: 1.1, rotate: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsSettingsOpen(true)}
-                    className="bg-gray-500 text-white hover:bg-gray-600 px-4 py-2 rounded"
-                  >
-                    Settings
-                  </motion.button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Adjust timer settings</p>
                 </TooltipContent>
               </Tooltip>
             </div>
