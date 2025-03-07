@@ -5,6 +5,7 @@ interface Settings {
   autoStart: boolean;
   notificationsEnabled: boolean;
   backgroundTheme: string; // Add background theme setting
+  breathingGuidanceEnabled: boolean; // Add breathing guidance setting
 }
 
 interface SettingsContextType {
@@ -29,6 +30,7 @@ const defaultSettings: Settings = {
   autoStart: false,
   notificationsEnabled: true,
   backgroundTheme: 'Particles', // Default to particles background
+  breathingGuidanceEnabled: false, // Off by default
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

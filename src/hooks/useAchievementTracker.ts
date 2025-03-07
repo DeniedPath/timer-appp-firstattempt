@@ -11,7 +11,6 @@ interface UseAchievementTrackerProps {
 
 export const useAchievementTracker = ({
   isRunning,
-  time,
   inputTime,
   progress,
   streak,

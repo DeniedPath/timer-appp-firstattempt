@@ -27,6 +27,8 @@ const defaultSettings: Settings = {
   soundEnabled: true,
   autoStart: false,
   notificationsEnabled: true,
+  backgroundTheme: 'Particles',
+  breathingGuidanceEnabled: false, // Off by default
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -76,3 +78,15 @@ export const useSettings = () => {
   }
   return context;
 };
+
+// Update in src/components/context/SettingsContext.tsx
+
+// Add to Settings interface
+interface Settings {
+  soundEnabled: boolean;
+  autoStart: boolean;
+  notificationsEnabled: boolean;
+  backgroundTheme: string;
+  breathingGuidanceEnabled: boolean; // New setting
+}
+

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Settings2, Globe, Sun } from "lucide-react";
+import { Settings2, Globe } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { useCallback, useState } from "react";
 import { PLANET_OPTIONS } from "../backgrounds/SolarSystem/SolarSystemBackground";
@@ -38,6 +38,11 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
   const toggleNotifications = useCallback(() => {
     updateSettings({ notificationsEnabled: !settings.notificationsEnabled });
   }, [settings.notificationsEnabled, updateSettings]);
+
+  // Add the toggle handler for breathing guidance
+  const toggleBreathingGuidance = useCallback(() => {
+    updateSettings({ breathingGuidanceEnabled: !settings.breathingGuidanceEnabled });
+  }, [settings.breathingGuidanceEnabled, updateSettings]);
 
   // Set background theme
   const setBackgroundTheme = useCallback((theme: string) => {
@@ -100,6 +105,17 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
               />
             </div>
             <span className="group-hover:text-blue-300 transition-colors">Enable Notifications</span>
+          </label>
+
+          <label className="flex items-center gap-3 cursor-pointer group" onClick={toggleBreathingGuidance}>
+            <div className={`w-10 h-6 rounded-full flex items-center ${settings.breathingGuidanceEnabled ? 'bg-blue-500' : 'bg-gray-600'} transition-colors duration-200 p-1`}>
+              <motion.div 
+                className="w-4 h-4 bg-white rounded-full" 
+                animate={{ x: settings.breathingGuidanceEnabled ? 16 : 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </div>
+            <span className="group-hover:text-blue-300 transition-colors">Breathing Guidance</span>
           </label>
         </div>
         

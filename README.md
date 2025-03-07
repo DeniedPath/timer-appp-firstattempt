@@ -1,15 +1,24 @@
+Based on your request to update the README with the new features and analytics dashboard, here's an enhanced version of your Space Time README:
+
 # Space Time
 
-A celestial-themed Focus Timer that helps users manage their time effectively through immersive space backgrounds, achievement systems, and productivity tracking.
+A celestial-themed Focus Timer that helps users manage their time effectively through immersive space backgrounds, achievement systems, productivity tracking, and interactive features.
 
 ## 🚀 Features
 
 * **Interactive Space Timer**: Customizable timer with immersive space-themed backgrounds
 * **Planetary Visualization**: Explore the solar system while maintaining focus
 * **Achievement System**: Unlock achievements and track progress through consistent sessions
-* **Session Analytics**: View statistics about your focus sessions with visual charts
-* **Settings Customization**: Personalize your experience with theme preferences and timer options
-* **Streak Tracking**: Maintain and visualize your daily focus consistency
+* **Advanced Analytics Dashboard**: Visualize your productivity patterns with interactive charts
+* **Breathing Guidance**: Follow subtle animations to maintain calm and focus
+* **Celestial Events**: Experience special cosmic events during focus sessions
+* **Focus Galaxy**: Watch your personal focus universe expand with each session
+* **Virtual Space Station**: Build and customize your space station as you progress
+* **Mission System**: Complete challenges to earn cosmic rewards
+* **Weather Integration**: Enjoy dynamic backgrounds that change with local weather
+* **Voice Commands**: Control your timer hands-free
+* **Space Facts**: Learn about astronomy during breaks
+* **Collaborative Focus**: Connect with friends for shared productivity sessions
 
 ## 📋 Table of Contents
 
@@ -67,6 +76,17 @@ http://localhost:3000
 2. **Planet Focus**: Select different planets to view during your focus sessions
 3. **Ambient Experience**: Enjoy a calming space environment while you work
 
+### Breathing Guidance
+1. **Toggle Feature**: Enable/disable breathing guidance in settings
+2. **Follow Animation**: Sync your breathing with the expanding and contracting animation
+3. **Audio Cues**: Optionally enable subtle audio prompts
+
+### Analytics Dashboard
+1. **View Metrics**: See your focus time, completion rate, and current streak
+2. **Explore Patterns**: Analyze your productivity by day and time
+3. **Session History**: Review your recent focus sessions
+4. **Filter Data**: View analytics for the past week, month, or year
+
 ### Achievements
 1. **Unlock Milestones**: Complete sessions to unlock various achievements
 2. **Track Progress**: View your achievement collection and completion status
@@ -80,7 +100,7 @@ http://localhost:3000
 
 ## 🛠️ Development Process
 
-This project was developed over a 6-week period following these phases:
+This project was developed over a multi-week process following these phases:
 
 ### Week 1: Basic Timer Display
 * Created functional timer component
@@ -118,6 +138,12 @@ This project was developed over a 6-week period following these phases:
 * Implemented solar system visualization
 * Added planet selection and animation
 
+### Week 7-8: Enhanced Features
+* Implemented breathing guidance system
+* Added celestial events
+* Created additional engagement features
+* Expanded analytics dashboard
+
 ## 💻 Technologies
 
 * **Next.js**: React framework for the application
@@ -140,6 +166,7 @@ src/
 │   │   ├── TimerControls.tsx
 │   │   └── TimerState.tsx
 │   ├── analytics/
+│   │   ├── Dashboard.tsx
 │   │   ├── ProgressIndicator.tsx
 │   │   ├── SessionStats.tsx
 │   │   └── StreakCounter.tsx
@@ -151,6 +178,10 @@ src/
 │   │   ├── AchievementsPanel.tsx
 │   │   ├── AchievementButton.tsx
 │   │   └── AchievementContext.tsx
+│   ├── features/
+│   │   ├── BreathingGuidance.tsx
+│   │   ├── CelestialEvents.tsx
+│   │   └── SpaceFacts.tsx
 │   ├── feedback/
 │   │   ├── NotificationSystem.tsx
 │   │   └── ToastManager.tsx
@@ -164,14 +195,16 @@ src/
 │   ├── useTimer.ts
 │   ├── useAnalytics.ts
 │   ├── useNotifications.ts
-│   └── useAchievementTracker.ts
+│   ├── useAchievementTracker.ts
+│   └── useBreathingGuidance.ts
 ├── lib/
 │   └── utils.ts
 ├── styles/
 │   └── globals.css
 └── pages/
     ├── _app.tsx
-    └── index.tsx
+    ├── index.tsx
+    └── analytics.tsx
 ```
 
 ## 🔍 Research Findings
@@ -183,18 +216,21 @@ Our research identified several key insights that informed the application desig
 * Achievement systems significantly increase engagement
 * Aesthetic experience affects focus quality
 * Customization options are highly valued
+* Breathing exercises enhance focus and reduce stress
 
 ### Technical Considerations
 * Timer accuracy requires special handling across browsers
 * Background operation needs careful implementation
 * Visual performance must be optimized for various devices
 * Local storage provides adequate persistence for core features
+* Animation performance requires careful optimization
 
 ### Competitive Analysis
 * Most timer apps lack engaging visuals
 * Achievement systems are underutilized in productivity apps
 * Settings customization is often limited
 * Few apps combine focus timing with immersive experiences
+* Breathing guidance is rarely integrated with timer functionality
 
 ## 🔮 Future Enhancements
 
@@ -203,11 +239,14 @@ Based on our constraints analysis and user feedback, future versions may include
 * Cloud synchronization for cross-device usage
 * Additional celestial themes and animations
 * Social sharing of achievements
-* Advanced analytics and insights
 * Custom sound design for different planets
 * Task integration for specific focus sessions
 * Progressive Web App (PWA) implementation
+* Mobile applications for iOS and Android
+* Full virtual space station customization
+* Expanded mission system with rewards
+* Community challenges and group goals
 
 ---
 
-Built with ❤️ and 🚀 by DeniedPath
+Built with ❤️ and 🚀 by Kristian Godinez
