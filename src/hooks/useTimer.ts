@@ -5,14 +5,24 @@ import { toast } from "sonner";
 
 interface TimerOptions {
   onComplete?: (duration: number) => void;
+  initialDuration?: number;
 }
 
-export const useTimer = (options: TimerOptions = {}) => {
+// Helper function to format time
+const formatTimeHelper = (duration: number): string => {
+  const minutes = Math.floor(duration / 60);
+  const seconds = duration % 60;
+  return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+};
+
+export const useTimer = ({ onComplete, initialDuration = 0 }: TimerOptions) => {
   const { settings } = useSettings();
   const [time, setTime] = useState<number>(0);
   const [inputTime, setInputTime] = useState<string>("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [initialDuration, setInitialDuration] = useState<number>(0);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [isBreak, setIsBreak] = useState<boolean>(false);
+  const [currentDuration, setCurrentDuration] = useState<number>(0);
 
   const { addSession } = useAnalytics();
 
@@ -37,13 +47,42 @@ export const useTimer = (options: TimerOptions = {}) => {
 
   const handleTimerComplete = () => {
     setIsRunning(false);
+    
     if (settings.soundEnabled) {
       playSound();
     }
-    const duration = initialDuration;
+    
+    const duration = currentDuration;
     addSession(duration, true);
+    
+    // Toggle break mode if auto-break is enabled
+    if (settings.autoBreakEnabled && !isBreak) {
+      setIsBreak(true);
+      const breakMinutes = settings.breakDuration;
+      const breakDuration = breakMinutes * 60;
+      setCurrentDuration(breakDuration);
+      setTime(breakDuration);
+      setInputTime(formatTimeHelper(breakDuration));
+      
+      // Auto-start break timer if enabled
+      if (settings.autoStart) {
+        setIsRunning(true);
+      }
+    } else {
+      // Reset to focus mode
+      setIsBreak(false);
+      setCurrentDuration(initialDuration);
+      setTime(initialDuration);
+      setInputTime(formatTimeHelper(initialDuration));
+      
+      // Auto-start next focus session if enabled
+      if (settings.autoStart) {
+        setIsRunning(true);
+      }
+    }
+    
     if (settings.notificationsEnabled) {
-      toast.success("Timer Done!", {
+      toast.success(isBreak ? "Break time over!" : "Focus session complete!", {
         duration: 3000,
         style: {
           background: "rgba(26, 26, 61, 0.8)",
@@ -53,20 +92,26 @@ export const useTimer = (options: TimerOptions = {}) => {
         },
       });
     }
-    if (options.onComplete) options.onComplete(duration);
-    if (settings.autoStart && inputTime) {
-      startTimer();
-    }
+    
+    if (onComplete) onComplete(duration);
   };
 
   const startTimer = (): void => {
-    const minutes = parseInt(inputTime) || 0;
-    const seconds = minutes * 60;
-    setInitialDuration(seconds);
+    // Parse the input time, handling both "MM" and "MM:SS" formats
+    let seconds = 0;
+    if (inputTime.includes(':')) {
+      const [minutes, secs] = inputTime.split(':').map(num => parseInt(num) || 0);
+      seconds = (minutes * 60) + secs;
+    } else {
+      seconds = (parseInt(inputTime) || 0) * 60;
+    }
+    
     setTime(seconds);
+    setCurrentDuration(seconds);
     setIsRunning(true);
+    
     if (settings.notificationsEnabled) {
-      toast.info("Timer started", {
+      toast.info(isBreak ? "Break started" : "Focus session started", {
         duration: 3000,
         style: {
           background: "rgba(26, 26, 61, 0.8)",
@@ -113,8 +158,8 @@ export const useTimer = (options: TimerOptions = {}) => {
   const resetTimer = (): void => {
     setIsRunning(false);
     setTime(0);
-    setInitialDuration(0);
     setInputTime("");
+    setCurrentDuration(0);
     if (time > 0) addSession(time, false);
     if (settings.notificationsEnabled) {
       toast.info("Timer reset", {
@@ -129,14 +174,8 @@ export const useTimer = (options: TimerOptions = {}) => {
     }
   };
 
-  const formatTime = (): string => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-  };
-
-  const progress = initialDuration > 0 
-    ? ((initialDuration - time) / initialDuration) * 100 
+  const progress = currentDuration > 0 
+    ? ((currentDuration - time) / currentDuration) * 100 
     : 0;
 
   const playSound = async (): Promise<void> => {
@@ -168,14 +207,16 @@ export const useTimer = (options: TimerOptions = {}) => {
     inputTime,
     setInputTime,
     isRunning,
-    soundEnabled: settings.soundEnabled,
-    setSoundEnabled: () => {},
+    soundEnabled,
+    setSoundEnabled: () => setSoundEnabled(prev => !prev),
     startTimer,
     stopTimer,
     continueTimer,
     resetTimer,
-    formatTime,
+    formatTime: () => formatTimeHelper(time),
     progress,
-    initialDuration,
+    initialDuration: currentDuration,
+    isBreak,
+    setIsBreak,
   };
 };

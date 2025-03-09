@@ -16,6 +16,8 @@ import { BreathingGuidance } from "../features/BreathingGuidance";
 import { BarChart2, Menu, Settings, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from "framer-motion";
+import { useSettings } from '../context/SettingsContext';
+import { SpaceFacts } from "../features/SpaceFacts";
 
 // Memoize components that shouldn't re-render often
 const MemoizedSessionStats = memo(SessionStats);
@@ -34,6 +36,7 @@ export const TimerState = () => {
   const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { addSession, sessions, getStreak } = useAnalytics();
+  const { settings } = useSettings();
 
   const timer = useTimer({
     onComplete: (duration: number) => {
@@ -86,6 +89,12 @@ export const TimerState = () => {
       <BreathingGuidance 
         isTimerRunning={timer.isRunning} 
         isBreak={false} // You'll need to track break state in your timer
+      />
+
+      <SpaceFacts 
+        isTimerRunning={timer.isRunning} 
+        isBreak={timer.isBreak || false}
+        currentPlanet={settings.backgroundTheme}
       />
 
       {/* Menu Button and Dropdown */}

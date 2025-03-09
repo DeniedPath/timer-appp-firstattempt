@@ -4,6 +4,10 @@ interface Settings {
   soundEnabled: boolean;
   autoStart: boolean;
   notificationsEnabled: boolean;
+  backgroundTheme: string;
+  breathingGuidanceEnabled: boolean;
+  spaceFactsEnabled: boolean;      // New setting
+  spaceFactsFrequency: number;     // In minutes
 }
 
 interface SettingsContextType {
@@ -28,7 +32,9 @@ const defaultSettings: Settings = {
   autoStart: false,
   notificationsEnabled: true,
   backgroundTheme: 'Particles',
-  breathingGuidanceEnabled: false, // Off by default
+  breathingGuidanceEnabled: false,
+  spaceFactsEnabled: true,         // Enabled by default
+  spaceFactsFrequency: 5,          // Show a fact every 5 minutes by default
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

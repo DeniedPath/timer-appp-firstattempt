@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Settings2, Globe } from "lucide-react";
+import { Settings2, Globe, Info, Repeat, Minus, Plus, Sparkles } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { useCallback, useState } from "react";
 import { PLANET_OPTIONS } from "../backgrounds/SolarSystem/SolarSystemBackground";
@@ -48,6 +48,16 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
   const setBackgroundTheme = useCallback((theme: string) => {
     updateSettings({ backgroundTheme: theme });
   }, [updateSettings]);
+
+  // Add toggle handlers
+  const toggleSpaceFacts = useCallback(() => {
+    updateSettings({ spaceFactsEnabled: !settings.spaceFactsEnabled });
+  }, [settings.spaceFactsEnabled, updateSettings]);
+
+  // Add toggle handler for celestial events
+  const toggleCelestialEvents = useCallback(() => {
+    updateSettings({ celestialEventsEnabled: !settings.celestialEventsEnabled });
+  }, [settings.celestialEventsEnabled, updateSettings]);
 
   return (
     <motion.div
@@ -115,7 +125,7 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
               />
             </div>
-            <span className="group-hover:text-blue-300 transition-colors">Breathing Guidance</span>
+            <span className="group-hover:text-blue-300 transition-colors">Breathing Guidance (Not working)</span>
           </label>
         </div>
         
@@ -183,6 +193,83 @@ export const SettingsPanel = ({ isOpen, onClose }: SettingsPanelProps) => {
               </div>
             </div>
           </motion.div>
+        </div>
+
+        <div className="mt-6 border-t border-gray-700 pt-4">
+          <h3 className="text-md font-semibold text-blue-300 mb-4 flex items-center gap-2">
+            <Info className="text-blue-400" size={18} />
+            Space Facts
+          </h3>
+          
+          <label className="flex items-center gap-3 cursor-pointer group mb-4" onClick={toggleSpaceFacts}>
+            <div className={`w-10 h-6 rounded-full flex items-center ${settings.spaceFactsEnabled ? 'bg-blue-500' : 'bg-gray-600'} transition-colors duration-200 p-1`}>
+              <motion.div 
+                className="w-4 h-4 bg-white rounded-full" 
+                animate={{ x: settings.spaceFactsEnabled ? 16 : 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </div>
+            <span className="group-hover:text-blue-300 transition-colors">Enable Space Facts</span>
+          </label>
+          
+          {settings.spaceFactsEnabled && (
+            <div className="pl-6 mb-4">
+              <div className="flex items-center">
+                <Repeat className="text-gray-400 mr-2" size={16} />
+                <span className="text-gray-300 mr-2">Show Facts Every</span>
+                <div className="flex items-center">
+                  <button 
+                    onClick={() => updateSettings({ 
+                      spaceFactsFrequency: Math.max(1, settings.spaceFactsFrequency - 1) 
+                    })}
+                    className="w-6 h-6 flex items-center justify-center bg-gray-700 rounded-l hover:bg-gray-600"
+                    disabled={settings.spaceFactsFrequency <= 1}
+                  >
+                    <Minus size={14} className={settings.spaceFactsFrequency <= 1 ? 'text-gray-500' : 'text-white'} />
+                  </button>
+                  <span className="w-10 text-center bg-gray-800 py-1">{settings.spaceFactsFrequency}</span>
+                  <button 
+                    onClick={() => updateSettings({ 
+                      spaceFactsFrequency: Math.min(30, settings.spaceFactsFrequency + 1) 
+                    })}
+                    className="w-6 h-6 flex items-center justify-center bg-gray-700 rounded-r hover:bg-gray-600"
+                    disabled={settings.spaceFactsFrequency >= 30}
+                  >
+                    <Plus size={14} className={settings.spaceFactsFrequency >= 30 ? 'text-gray-500' : 'text-white'} />
+                  </button>
+                </div>
+                <span className="text-gray-300 ml-2">Minutes</span>
+              </div>
+              <p className="text-xs text-gray-400 mt-2">
+                Facts will also appear during breaks. More frequent facts may affect focus.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Celestial Events section */}
+        <div className="mt-6 border-t border-gray-700 pt-4">
+          <h3 className="text-md font-semibold text-blue-300 mb-4 flex items-center gap-2">
+            <Sparkles className="text-yellow-400" size={18} />
+            Celestial Events
+          </h3>
+          
+          <label className="flex items-center gap-3 cursor-pointer group" onClick={toggleCelestialEvents}>
+            <div className={`w-10 h-6 rounded-full flex items-center ${settings.celestialEventsEnabled ? 'bg-blue-500' : 'bg-gray-600'} transition-colors duration-200 p-1`}>
+              <motion.div 
+                className="w-4 h-4 bg-white rounded-full" 
+                animate={{ x: settings.celestialEventsEnabled ? 16 : 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </div>
+            <span className="group-hover:text-blue-300 transition-colors">Enable Celestial Events</span>
+          </label>
+          
+          {settings.celestialEventsEnabled && (
+            <p className="text-xs text-gray-400 mt-2 pl-6">
+              Random cosmic events will appear during your focus sessions and when milestones are reached.
+            </p>
+          )}
         </div>
       </div>
       

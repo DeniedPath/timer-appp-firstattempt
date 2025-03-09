@@ -22,9 +22,18 @@ export const PLANET_OPTIONS = [
 // Define a type for the planet object
 interface Planet {
   planet: THREE.Mesh;
+  orbit: THREE.Mesh;
+  orbitalSpeed: number;
+  rotationSpeed: number;
   orbitalPosition: number;
   orbitalDistance: number;
-  // Add any other properties you need
+}
+
+interface CameraTarget {
+  x: number;
+  y: number;
+  z: number;
+  targetObject?: THREE.Mesh;
 }
 
 const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFocus = 'Overview' }) => {
@@ -34,13 +43,13 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
     camera: THREE.PerspectiveCamera;
     renderer: THREE.WebGLRenderer;
     controls: OrbitControls;
-    planets: any[];
+    planets: Planet[];
     sun: THREE.Mesh;
     currentFocus: Planet | null;
     isTransitioning: boolean;
-    cameraTarget: any;
+    cameraTarget: CameraTarget;
     requestID?: number;
-  }>();
+  }>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -70,9 +79,12 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
-      alpha: true // Enable transparency for background
+      alpha: true,
+      powerPreference: "high-performance"
     });
 
+    // Optimize renderer
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0); // Set clear color with alpha=0 for transparency
     containerRef.current.appendChild(renderer.domElement);
@@ -87,11 +99,11 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
     controls.enableRotate = false; // Disable rotation for background (we'll handle it manually)
 
     // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0x555555);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
     // Add sun light
-    const sunLight = new THREE.PointLight(0xffffff, 3, 1000 * systemScale);
+    const sunLight = new THREE.PointLight(0xffffff, 5, 2000 * systemScale);
     scene.add(sunLight);
 
     // Create sun
@@ -112,7 +124,7 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
     scene.add(hemisphereLight);
 
     // Initialize camera animation variables
-    let cameraTarget = { x: 0, y: 0, z: 50 };
+    let cameraTarget: CameraTarget = { x: 0, y: 0, z: 50 };
     let currentFocus: Planet | null = null;
     let isTransitioning = false;
 
@@ -123,16 +135,16 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
       
       // Create a placeholder material since we can't load textures immediately
       const material = new THREE.MeshStandardMaterial({
-        color: 0x888888, // Placeholder color
-        roughness: 0.6,
-        metalness: 0.1,
-        emissive: 0x222222,
-        emissiveIntensity: 0.1
+        color: 0xffffff,
+        roughness: 0.3,
+        metalness: 0.2,
+        emissive: 0x444444,
+        emissiveIntensity: 0.2
       });
       
       // Load the texture asynchronously
       const textureLoader = new THREE.TextureLoader();
-      textureLoader.load(texturePath, (texture) => {
+      textureLoader.load(texturePath, (texture: THREE.Texture) => {
         material.map = texture;
         material.needsUpdate = true;
       });
@@ -150,7 +162,7 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
         color: 0xffffff,
         side: THREE.DoubleSide,
         transparent: true,
-        opacity: 0.1 // More subtle for background
+        opacity: 0.3 // Increased from 0.1 for better visibility
       });
       const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
       orbit.rotation.x = Math.PI / 2;
@@ -210,21 +222,22 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
       const starsGeometry = new THREE.BufferGeometry();
       const starsMaterial = new THREE.PointsMaterial({
         color: 0xFFFFFF,
-        size: 0.1,
+        size: 0.3,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.9,
+        sizeAttenuation: false // Disable size attenuation for better performance
       });
       
-      // Create stars
-      const starsVertices = [];
-      for (let i = 0; i < 5000; i++) {
-        const x = (Math.random() - 0.5) * 5000;
-        const y = (Math.random() - 0.5) * 5000;
-        const z = (Math.random() - 0.5) * 5000;
-        starsVertices.push(x, y, z);
+      const starsVertices = new Float32Array(3000 * 3); // Reduce star count and use typed array
+      for (let i = 0; i < 3000; i++) {
+        const i3 = i * 3;
+        starsVertices[i3] = (Math.random() - 0.5) * 5000;
+        starsVertices[i3 + 1] = (Math.random() - 0.5) * 5000;
+        starsVertices[i3 + 2] = (Math.random() - 0.5) * 5000;
       }
       
-      starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+      starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsVertices, 3));
+      
       const starField = new THREE.Points(starsGeometry, starsMaterial);
       scene.add(starField);
       
@@ -259,18 +272,15 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
       isTransitioning = true;
       currentFocus = planet;
       
-      // Set up side view instead of zooming in
-      const angle = planet.orbitalPosition + Math.PI / 2; // 90 degrees offset for side view
-      const distance = planet.orbitalDistance * 1.5;
-      
-      // Calculate position to see planet from the side
-      const offsetX = Math.cos(angle) * distance;
-      const offsetZ = Math.sin(angle) * distance;
+      // Calculate camera position relative to planet's current position
+      const distance = planet.planet.geometry.parameters.radius * 10; // Distance based on planet size
+      const offsetX = planet.planet.position.x;
+      const offsetZ = planet.planet.position.z + distance; // Position camera behind planet
       
       // Set camera target with slight elevation
       cameraTarget = {
         x: offsetX,
-        y: planet.orbitalDistance * 0.2, // Slight elevation
+        y: planet.planet.position.y + distance * 0.2, // Slight elevation relative to planet
         z: offsetZ,
         targetObject: planet.planet
       };
@@ -311,10 +321,12 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
         sceneRef.current.requestID = requestID;
       }
       
+      // Throttle updates during transitions
+      const updateSpeed = isTransitioning ? 0.01 : 0.02;
+      
       // Update planet positions and rotations
       planets.forEach(planet => {
-        // Update orbital position (slower for background)
-        planet.orbitalPosition += planet.orbitalSpeed * 0.002;
+        planet.orbitalPosition += planet.orbitalSpeed * updateSpeed;
         
         // Calculate new position based on orbit
         planet.planet.position.x = Math.cos(planet.orbitalPosition) * planet.orbitalDistance;
@@ -326,10 +338,9 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
       
       // Handle camera transitions
       if (isTransitioning) {
-        // Smooth camera movement to target position
-        camera.position.x += (cameraTarget.x - camera.position.x) * 0.02;
-        camera.position.y += (cameraTarget.y - camera.position.y) * 0.02;
-        camera.position.z += (cameraTarget.z - camera.position.z) * 0.02;
+        camera.position.x += (cameraTarget.x - camera.position.x) * 0.05;
+        camera.position.y += (cameraTarget.y - camera.position.y) * 0.05;
+        camera.position.z += (cameraTarget.z - camera.position.z) * 0.05;
         
         // Look at the sun for overview or the planet for planet view
         if (currentFocus) {
@@ -348,17 +359,18 @@ const SolarSystemBackground: React.FC<SolarSystemBackgroundProps> = ({ planetFoc
           controls.enabled = false;
         }
       } else if (currentFocus) {
-        // Calculate the angle for the orbit
-        const angle = currentFocus.orbitalPosition + Math.PI / 2; // 90 degrees offset
-        const distance = currentFocus.orbitalDistance * 1.5;
+        // Get current planet position
+        const planet = currentFocus.planet;
+        const geometry = planet.geometry as THREE.SphereGeometry;
+        const distance = geometry.parameters.radius * 10;
         
-        // Update camera position to keep side view as planet moves
-        camera.position.x = Math.cos(angle) * distance;
-        camera.position.y = currentFocus.orbitalDistance * 0.2; // Maintain slight elevation
-        camera.position.z = Math.sin(angle) * distance;
+        // Update camera position to keep view on planet
+        camera.position.x = planet.position.x;
+        camera.position.y = planet.position.y + distance * 0.2;
+        camera.position.z = planet.position.z + distance;
         
         // Always look at the planet
-        camera.lookAt(currentFocus.planet.position);
+        camera.lookAt(planet.position);
       } else {
         // In overview mode, slowly rotate camera around the sun
         const time = Date.now() * 0.0001;

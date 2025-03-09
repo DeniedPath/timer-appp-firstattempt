@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 
-interface Settings {
+export interface Settings {
   soundEnabled: boolean;
   autoStart: boolean;
   notificationsEnabled: boolean;
   backgroundTheme: string; // Add background theme setting
   breathingGuidanceEnabled: boolean; // Add breathing guidance setting
+  spaceFactsEnabled: boolean;
+  spaceFactsFrequency: number;
+  autoBreakEnabled: boolean;
+  breakDuration: number;
+  celestialEventsEnabled: boolean;     // New setting
 }
 
 interface SettingsContextType {
@@ -25,12 +30,17 @@ const getStoredSettings = (): Settings | null => {
 };
 
 // Default settings
-const defaultSettings: Settings = {
+export const defaultSettings: Settings = {
   soundEnabled: true,
   autoStart: false,
   notificationsEnabled: true,
   backgroundTheme: 'Particles', // Default to particles background
   breathingGuidanceEnabled: false, // Off by default
+  spaceFactsEnabled: true,
+  spaceFactsFrequency: 5,
+  autoBreakEnabled: true,
+  breakDuration: 5,
+  celestialEventsEnabled: true,        // Enabled by default
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
